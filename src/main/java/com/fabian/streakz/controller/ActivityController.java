@@ -24,7 +24,7 @@ public class ActivityController {
     private ActivityService activityService;
 
     @PostMapping
-    public ResponseEntity createActivity(@Valid @RequestBody Activity activity) {
+    public ResponseEntity<Activity> createActivity(@Valid @RequestBody Activity activity) {
         return ResponseEntity.ok(activityService.createActivity(activity));
     }
 
@@ -40,23 +40,12 @@ public class ActivityController {
 
     @PutMapping
     public ResponseEntity updateActivity(@Valid @RequestBody Activity activity) {
-        if (!activityRepository.findById(activity.getId()).isPresent())
-            return ResponseEntity.badRequest().body("Activity ID not found.");
-        if (activityRepository.findByTitle(activity.getTitle()) == null)
-            return ResponseEntity.ok(activityRepository.save(activity));
-
-        return ResponseEntity.badRequest().body("Activity with name " + activity.getTitle() + " already exists");
+        return ResponseEntity.ok(activityService.updateActivity(activity));
     }
 
     @PutMapping("/up/{id}")
     public ResponseEntity increaseActivityStreak(@PathVariable String id) {
-        if (activityRepository.findById(UUID.fromString(id)).isPresent()) {
-            Activity activity = activityRepository.findById(UUID.fromString(id)).get();
-            activity.updateStreak();
-            return ResponseEntity.ok(activityRepository.save(activity));
-        }
-
-        return ResponseEntity.badRequest().body("Activity not found.");
+        return ResponseEntity.ok().body(activityService.increaseStreak(UUID.fromString(id)));
     }
 
 }
