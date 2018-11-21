@@ -3,6 +3,7 @@ package com.fabian.streakz.controller;
 
 import com.fabian.streakz.model.Activity;
 import com.fabian.streakz.repository.ActivityRepository;
+import com.fabian.streakz.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,23 +20,22 @@ public class ActivityController {
     @Autowired
     private ActivityRepository activityRepository;
 
+    @Autowired
+    private ActivityService activityService;
+
     @PostMapping
     public ResponseEntity createActivity(@Valid @RequestBody Activity activity) {
-        if (activityRepository.findByTitle(activity.getTitle()) == null) {
-            return ResponseEntity.ok(activityRepository.save(activity));
-        }
-
-        return ResponseEntity.badRequest().body("Activity with name " + activity.getTitle() + " already exists");
+        return ResponseEntity.ok(activityService.createActivity(activity));
     }
 
     @GetMapping
     public ResponseEntity<List<Activity>> getActivities() {
-        return ResponseEntity.ok().body(activityRepository.findAll());
+        return ResponseEntity.ok().body(activityService.getAllActivities());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Activity>> getActivity(@PathVariable String id) {
-        return ResponseEntity.ok().body(activityRepository.findById(UUID.fromString(id)));
+        return ResponseEntity.ok().body(activityService.getActivityById(UUID.fromString(id)));
     }
 
     @PutMapping
@@ -58,8 +58,5 @@ public class ActivityController {
 
         return ResponseEntity.badRequest().body("Activity not found.");
     }
-
-
-
 
 }
