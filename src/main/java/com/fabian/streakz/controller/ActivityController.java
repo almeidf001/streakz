@@ -47,5 +47,4 @@ public class ActivityController {
     public ResponseEntity increaseActivityStreak(@PathVariable String id) {
         return ResponseEntity.ok().body(activityService.increaseStreak(UUID.fromString(id)));
     }
-
 }

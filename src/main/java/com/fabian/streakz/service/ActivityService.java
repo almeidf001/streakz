@@ -35,7 +35,7 @@ public class ActivityService {
     }
 
     public Activity updateActivity(Activity activity) {
-        if (!getActivityById(activity.getId()).isPresent())
+        if (!getActivityById(activity.getUuid()).isPresent())
             throw new ActivityNotFoundException("Activity with id " + activity.getId() + " does not exist.");
         if (getActivityByTitle(activity.getTitle()).isPresent())
             throw new ActivityAlreadyExistsException("Activity with title " + activity.getTitle() + " already exists.");
@@ -51,7 +51,6 @@ public class ActivityService {
         activity.setStreak(activity.getStreak()+1);
         return activityRepository.save(activity);
     }
-
 
     private Optional<Activity> getActivityByTitle(String title) {
         return Optional.ofNullable(activityRepository.findByTitle(title));

@@ -12,8 +12,13 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Activity {
+
     @Id
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @NotBlank
+    private UUID uuid;
 
     @NotBlank
     private String title;
@@ -21,14 +26,6 @@ public class Activity {
     private int streak;
 
     public Activity() {
-        id = UUID.randomUUID();
-    }
-
-    public void updateStreak() {
-        streak++;
-    }
-
-    public void resetStreak() {
-        streak = 0;
+        uuid = UUID.randomUUID();
     }
 }
