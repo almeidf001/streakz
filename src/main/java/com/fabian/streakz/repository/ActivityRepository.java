@@ -10,7 +10,8 @@ import java.util.UUID;
 @Repository
 public interface ActivityRepository extends JpaRepository<Activity, UUID> {
 
-    public Activity findByTitle(String title);
-//    public String findByTitle(String title);
+    Activity findByTitle(String title);
+
+    Activity findByUuid(UUID id);
 
 }

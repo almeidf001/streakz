@@ -2,7 +2,6 @@ package com.fabian.streakz.controller;
 
 
 import com.fabian.streakz.model.Activity;
-import com.fabian.streakz.repository.ActivityRepository;
 import com.fabian.streakz.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,15 +9,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController()
 @RequestMapping("/activities")
 public class ActivityController {
-
-    @Autowired
-    private ActivityRepository activityRepository;
 
     @Autowired
     private ActivityService activityService;
@@ -34,8 +29,8 @@ public class ActivityController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Activity>> getActivity(@PathVariable String id) {
-        return ResponseEntity.ok().body(activityService.getActivityById(UUID.fromString(id)));
+    public ResponseEntity<Activity> getActivity(@PathVariable String id) {
+        return ResponseEntity.ok().body(activityService.getActivityByUUID(UUID.fromString(id)));
     }
 
     @PutMapping

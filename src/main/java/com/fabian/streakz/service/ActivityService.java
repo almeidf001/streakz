@@ -7,6 +7,7 @@ import com.fabian.streakz.repository.ActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,8 +27,11 @@ public class ActivityService {
         return activityRepository.save(activity);
     }
 
-    public Optional<Activity> getActivityById(UUID id) {
-        return activityRepository.findById(id);
+    public Activity getActivityByUUID(UUID id) {
+        Optional<Activity> activity = Optional.ofNullable(activityRepository.findByUuid(id));
+        if (activity.isPresent())
+            return activity.get();
+        throw new ActivityNotFoundException(id);
     }
 
     public List<Activity> getAllActivities() {
@@ -35,20 +39,15 @@ public class ActivityService {
     }
 
     public Activity updateActivity(Activity activity) {
-        if (!getActivityById(activity.getUuid()).isPresent())
-            throw new ActivityNotFoundException("Activity with id " + activity.getId() + " does not exist.");
         if (getActivityByTitle(activity.getTitle()).isPresent())
             throw new ActivityAlreadyExistsException("Activity with title " + activity.getTitle() + " already exists.");
-
         return activityRepository.save(activity);
     }
 
     public Activity increaseStreak(UUID id) {
-        if (!getActivityById(id).isPresent())
-            throw new ActivityNotFoundException("Activity with id " + id.toString() + " not found.");
-
-        Activity activity = getActivityById(id).get();
+        Activity activity = getActivityByUUID(id);
         activity.setStreak(activity.getStreak()+1);
+        activity.setDateIncreased(new Date());
         return activityRepository.save(activity);
     }
 
@@ -56,6 +55,10 @@ public class ActivityService {
         return Optional.ofNullable(activityRepository.findByTitle(title));
     }
 
-
-
+    public void resetStreak(UUID id) {
+        Activity activity = getActivityByUUID(id);
+        activity.setStreak(0);
+        activity.setDateIncreased(new Date());
+        activityRepository.save(activity);
+    }
 }
